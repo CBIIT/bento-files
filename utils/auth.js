@@ -1,5 +1,6 @@
 const config = require('../config');
 const bent = require('bent');
+const {getFileACL} = require("../model");
 
 module.exports = function (exceptions) {
     if (config.authEnabled) {
@@ -10,8 +11,16 @@ module.exports = function (exceptions) {
             try {
                 const cookie = req.headers.cookie;
                 if (cookie) {
-                    const auth = bent('POST',  'json',  {Cookie: cookie});
-                    const result = await auth(config.authUrl);
+                    const fileId = req.path.replace("/api/files/", "");
+                    const reqBody = {Cookie: cookie,
+                    //    Optional ACL When authorizationEnabled Enabled
+                    ...(config.authorizationEnabled && {
+                        acl: await getFileACL(fileId)
+                    })};
+                    const auth = bent('POST',  'json',  reqBody);
+                    // Add second authentication acl parameter
+                    const authURL = config.authUrl;
+                    const result = await auth(authURL);
                     if (result && result.status) {
                         if (result.status) {
                             return next();

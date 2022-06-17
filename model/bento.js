@@ -1,16 +1,16 @@
+const {getFileField} = require("../utils/file");
 module.exports = {
     query: `query file($file_id: String){  
         file (file_id: $file_id)
         {
-            file_location
+            file_location,
+            acl
         }
     }`,
     getLocation: data => {
-        if (data && data.file && data.file.length > 0) {
-            return data.file[0].file_location;
-        } else {
-            console.error("File not found in DB");
-            return null;
-        }
+         return getFileField(data, "file_location");
+    },
+    getAcl: data => {
+        return getFileField(data, "acl");
     }
 };
