@@ -1,12 +1,11 @@
 const config = require('../config');
 const AWS = require('aws-sdk');
+const {getFileLocation} = require("../model");
 
 
 const DEFAULT_EXPIRATION_SECONDS = 60 * 60 * 24; // 24 hours
 
 const signer = new AWS.CloudFront.Signer(config.cfKeyPairId, config.cfPrivateKey);
-
-const getFileLocation = require('../model');
 
 function getExpiration() {
   const expiresInSeconds = config.urlExpiresInSeconds || DEFAULT_EXPIRATION_SECONDS;

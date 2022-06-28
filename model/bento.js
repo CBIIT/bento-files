@@ -7,10 +7,10 @@ module.exports = {
             acl
         }
     }`,
-    getLocation: data => {
+    getLocation: (data) => {
          return getFileField(data, "file_location");
     },
-    getAcl: data => {
+    getAcl: (data) => {
         return getFileField(data, "acl");
     }
 };

@@ -13,19 +13,14 @@ module.exports = function (exceptions) {
                 if (cookie) {
                     const fileId = req.path.replace("/api/files/", "");
                     const reqBody = {Cookie: cookie,
-                    //    Optional ACL When authorizationEnabled Enabled
+                    // Optional ACL Authentication When authorizationEnabled Enabled
                     ...(config.authorizationEnabled && {
                         acl: await getFileACL(fileId)
                     })};
                     const auth = bent('POST',  'json',  reqBody);
-                    // Add second authentication acl parameter
-                    const authURL = config.authUrl;
-                    const result = await auth(authURL);
-                    if (result && result.status) {
-                        if (result.status) {
-                            return next();
-                        }
-                    }
+                    // Trigger Bento-Auth-Backend API
+                    const result = await auth(config.authUrl);
+                    if (result && result.status) return next();
                 }
                 return res.status(403).send('Not authenticated!');
             } catch (e) {

@@ -21,7 +21,10 @@ switch (config.project) {
     throw `Unknown project "${config.project}"`;
 }
 
-async function getFileInfo(file_id, callback) {
+// Calling this API will return file information
+// callback parameter will trigger to receive the desired field in a file from result.data
+// ex) await getFileInfo(file_id, model.getLocation); searching for a file location by a field id
+async function getFileInfo(file_id, getFieldCallback) {
   const result = await queryBackend(config.backendUrl, {
     query: model.query,
     variables: {
@@ -29,12 +32,11 @@ async function getFileInfo(file_id, callback) {
     }
   });
   if (result && result.data) {
-    const location = callback(result.data);
+    const location = getFieldCallback(result.data);
     if (location) {
       return location;
-    } else {
-      throw {statusCode: 404, message: 'File not found in database'}
     }
+    throw {statusCode: 404, message: 'File not found in database'}
   } else {
     let message = 'Query database failed';
     if (result && result.errors) {
@@ -44,11 +46,10 @@ async function getFileInfo(file_id, callback) {
   }
 }
 
-module.exports = async function getFileLocation(file_id) {
-  await getFileInfo(file_id, model.getLocation);
-};
-
 module.exports = {
+  async getFileLocation(file_id) {
+    return await getFileInfo(file_id, model.getLocation);
+  },
   async getFileACL(file_id) {
     return await getFileInfo(file_id, model.getAcl);
   }
