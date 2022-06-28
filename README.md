@@ -15,8 +15,9 @@ Following environmental variables are needed
 
 Following variable is only needed when AUTH_ENABLED is set to true
 - AUTH_URL : URL of bento-auth service
+- AUTHORIZATION_ENABLED: if set to "true" under AUTH_URL enabled, it will use a file acl as an additional authenticator.
 
-Following variables are only needed for specific source
+  Following variables are only needed for specific source
 
 ### INDEXD 
 - INDEXD_URL : URL of IndexD service
