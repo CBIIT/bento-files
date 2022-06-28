@@ -11,6 +11,9 @@ switch (config.source) {
   case config.sourceNames.LOCAL:
     getUrl = require('./localConnector');
     break;
+  case config.sourceNames.SIGNED_S3:
+    getUrl = require('./S3Connector');
+    break;
   case config.sourceNames.PUBLIC_S3:
     getUrl = require('./publicS3Connector');
     break;

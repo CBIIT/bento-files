@@ -1,36 +1,40 @@
 const { removeTrailingSlashes } = require('./utils');
 const fs = require('fs');
-const dotenv = require('dotenv')
-dotenv.config();
+
+const DEFAULT_EXPIRATION_SECONDS = 60 * 60 * 24; // 24 hours
+
 const INDEXD = 'INDEXD';
 const CLOUD_FRONT = 'CLOUD_FRONT';
 const LOCAL = 'LOCAL';
 const PUBLIC_S3 = 'PUBLIC_S3';
+const SIGNED_S3 = 'SIGNED_S3';
 const DUMMY = 'DUMMY';
 const ICDC = 'ICDC';
 const BENTO = 'BENTO';
 const GMB = 'GMB';
 const C3DC = 'C3DC';
+const CTDC = 'CTDC';
 
 const config = {
   projectNames: {
     ICDC,
     BENTO,
     GMB,
-    C3DC
+    C3DC,
+    CTDC
   },
   sourceNames: {
     INDEXD,
     CLOUD_FRONT,
     LOCAL,
     PUBLIC_S3,
+    SIGNED_S3,
     DUMMY,
   },
-  source: (process.env.URL_SRC || LOCAL).toUpperCase(),
+  source: (process.env.URL_SRC || DUMMY).toUpperCase(),
   fake: process.env.FAKE ? (process.env.FAKE.toLowerCase() === 'true') : false, // This is used to fake CloudFront call locally
   backendUrl: removeTrailingSlashes(process.env.BACKEND_URL),
   authEnabled: process.env.AUTH_ENABLED ? process.env.AUTH_ENABLED.toLowerCase() === 'true' : false,
-  authorizationEnabled: process.env.AUTHORIZATION_ENABLED ? process.env.AUTHORIZATION_ENABLED.toLowerCase() === 'true' : false,
   authUrl: process.env.AUTH_URL ? (process.env.AUTH_URL.toLowerCase() === 'null' ? null : process.env.AUTH_URL) : null,
   version: process.env.VERSION,
   date: process.env.DATE,
@@ -65,7 +69,7 @@ switch (config.source) {
     config.cfUrl = removeTrailingSlashes(process.env.CF_URL);
     config.cfKeyPairId = process.env.CF_KEY_PAIR_ID;
     config.cfPrivateKey = process.env.CF_PRIVATE_KEY;
-    config.urlExpiresInSeconds = process.env.URL_EXPIRES_IN_SECONDS
+    config.urlExpiresInSeconds = process.env.URL_EXPIRES_IN_SECONDS || DEFAULT_EXPIRATION_SECONDS
     if (!config.cfUrl) {
       throw "CF_URL is not set!";
     }
@@ -78,6 +82,10 @@ switch (config.source) {
     if (!config.backendUrl) {
       throw 'BACKEND_URL is not set!';
     }
+    break;
+  case SIGNED_S3:
+    // config.region = process.env.REGION || 'us-east-1';
+    config.urlExpiresInSeconds = process.env.URL_EXPIRES_IN_SECONDS || DEFAULT_EXPIRATION_SECONDS
     break;
   case LOCAL:
     // Todo: add local support here

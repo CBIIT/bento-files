@@ -17,6 +17,9 @@ switch (config.project) {
   case config.projectNames.C3DC:
     model = require('./c3dc');
     break;
+  case config.projectNames.CTDC:
+    model = require('./ctdc');
+    break;
   default:
     throw `Unknown project "${config.project}"`;
 }

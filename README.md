@@ -7,7 +7,7 @@ Following environmental variables are needed
 
 - VERSION : version number
 - DATE : build date
-- URL_SRC : source for signed URL, can be one of INDEXD, CLOUD_FRONT, LOCAL, PUBLIC_S3 or DUMMY (default)
+- URL_SRC : source for signed URL, can be one of INDEXD, CLOUD_FRONT, SIGNED_S3 or DUMMY (default)
 - BACKEND_URL : URL of bento GraphQL backend
 - AUTH_ENABLED: set to "true" to enable authentication
 - PROJECT : can be one of ICDC, BENTO, GMB or C3DC 
@@ -25,4 +25,7 @@ Following variables are only needed for specific source
 - CF_URL : URL of CloudFront service
 - CF_KEY_PAIR_ID
 - CF_PRIVATE_KEY
+- URL_EXPIRES_IN_SECONDS : expiration for signed URL
+
+### SIGNED_S3
 - URL_EXPIRES_IN_SECONDS : expiration for signed URL
