@@ -1,4 +1,4 @@
-const {getFileField} = require("../utils/file");
+const {getFileField} = require("../utils/file-util");
 module.exports = {
     query: `query file($file_id: String){  
         file (file_id: $file_id)
