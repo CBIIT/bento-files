@@ -1,8 +1,8 @@
 const config = require('../config');
-const getFileLocation = require('../model');
 
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const {getFileLocation} = require("../model");
 
 function parseFileLocation(fileLocation) {
     // Input: "s3://<bucket>/<path/to/file>"
