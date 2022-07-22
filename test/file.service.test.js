@@ -7,11 +7,17 @@ jest.mock('../model')
 describe('Util Test', () => {
     test('/file acl array & user acl array compare test', () => {
         const test = [
-            {userAcl: ['Open'], fileAcl: ['Open'], result: true},
-            {userAcl: ['Open'], fileAcl: ['Open', 'Closed'], result: true},
-            {userAcl: ['Open'], fileAcl: ['Closed'], result: false},
-            {userAcl: [], fileAcl: ['Open'], result: false},
-            {userAcl: ['Open', 'Closed'], fileAcl: ['Closed'], result: true},
+            {userAcl: [], fileAcl: ['OPEN'], result: true},
+            {userAcl: [], fileAcl: ['opEn'], result: true},
+            {userAcl: [], fileAcl: ['opEn.......'], result: false},
+            {userAcl: ["armID-1", "armID-2"], fileAcl: ['Open'], result: true},
+            {userAcl: [], fileAcl: ['Open', "armID-1"], result: true},
+            {userAcl: ["armID-1",], fileAcl: ["armID-1"], result: true},
+            {userAcl: ["armID-1",], fileAcl: ["armID-1", "armID-2"], result: true},
+            {userAcl: ["armID-2","armID-3","armID-4"], fileAcl: ["armID-2"], result: true},
+            {userAcl: ["armID-2","armID-3","armID-4"], fileAcl: ["armID-9"], result: false},
+            {userAcl: [], fileAcl: ['Open'], result: true},
+            {userAcl: [], fileAcl: [], result: false},
             {userAcl: null, fileAcl: "", result: false},
             {userAcl: null, fileAcl: null, result: false},
             {userAcl: [], fileAcl: null, result: false},
