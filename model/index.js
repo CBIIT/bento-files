@@ -28,6 +28,13 @@ switch (config.project) {
 // callback parameter will trigger to receive the desired field in a file from result.data
 // ex) await getFileInfo(file_id, model.getLocation); searching for a file location by a field id
 async function getFileInfo(file_id, getFieldCallback) {
+  // let request = bent('POST', 'json'cookie);
+  // const result = await queryBackend('http://127.0.0.1:4020/v1/graphql/', {
+  //   query: require('./bento'),
+  //   variables: {
+  //     file_id
+  //   }
+  // },{Cookie: cookie});
   const result = await queryBackend(config.backendUrl, {
     query: model.query,
     variables: {
