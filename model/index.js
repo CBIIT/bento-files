@@ -24,7 +24,10 @@ switch (config.project) {
     throw `Unknown project "${config.project}"`;
 }
 
-module.exports = async function getFileLocation(file_id) {
+// Calling this API will return file information
+// callback parameter will trigger to return the desired file field
+// ex) await getFileInfo(file_id, model.getLocation); getting location field
+const getFileInfo = async (file_id, fieldCallback) => {
   const result = await queryBackend(config.backendUrl, {
     query: model.query,
     variables: {
@@ -32,7 +35,7 @@ module.exports = async function getFileLocation(file_id) {
     }
   });
   if (result && result.data) {
-    const location = model.getLocation(result.data);
+    const location = fieldCallback(result.data);
     if (location) {
       return location;
     } else {
@@ -43,6 +46,15 @@ module.exports = async function getFileLocation(file_id) {
     if (result && result.errors) {
       message = result.errors.reduce((message, msg) => message ? `${message}\n${msg.message}` : msg.message, '');
     }
-    throw {statusCode: 400, message }
+    throw {statusCode: 400, message}
+  }
+}
+
+module.exports = {
+  async getFileLocation(file_id) {
+    return await getFileInfo(file_id, model.getLocation);
+  },
+  async getFileACL(file_id) {
+    return await getFileInfo(file_id, model.getAcl);
   }
 }

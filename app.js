@@ -1,6 +1,7 @@
 const newrelic = require('newrelic');
 const express = require('express');
 const path = require('path');
+const {createSession} = require("./services/session");
 const logger = require('morgan');
 const fs = require('fs');
 const cors = require('cors');
@@ -18,6 +19,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, LOG_FOLDER, 'a
 const filesRouter = require('./routes/files');
 
 const app = express();
+app.use(createSession());
 app.use(cors());
 
 // setup the logger

@@ -6,7 +6,7 @@ const DEFAULT_EXPIRATION_SECONDS = 60 * 60 * 24; // 24 hours
 
 const signer = new AWS.CloudFront.Signer(config.cfKeyPairId, config.cfPrivateKey);
 
-const getFileLocation = require('../model');
+const {getFileLocation} = require("../model");
 
 function getExpiration() {
   const expiresInSeconds = config.urlExpiresInSeconds || DEFAULT_EXPIRATION_SECONDS;

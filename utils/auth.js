@@ -1,5 +1,5 @@
 const config = require('../config');
-const bent = require('bent');
+const {authFileACL} = require("../services/file-auth");
 
 module.exports = function (exceptions) {
     if (config.authEnabled) {
@@ -8,15 +8,12 @@ module.exports = function (exceptions) {
                 return next();
             }
             try {
-                const cookie = req.headers.cookie;
-                if (cookie) {
-                    const auth = bent('POST',  'json',  {Cookie: cookie});
-                    const result = await auth(config.authUrl);
-                    if (result && result.status) {
-                        if (result.status) {
-                            return next();
-                        }
-                    }
+                if (req.session && req.session.userInfo) {
+                    if (!config.authorizationEnabled) return next();
+                    // Search ACL in Bento-Backend API
+                    const fileId = req.path.replace("/api/files/", "");
+                    const fileAcl = await getFileACL(fileId);
+                    if (authFileACL(req.session.userInfo.acl, fileAcl)) return next();
                 }
                 return res.status(403).send('Not authenticated!');
             } catch (e) {
