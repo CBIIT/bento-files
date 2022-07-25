@@ -1,5 +1,6 @@
 const config = require('../config');
 const {authFileACL} = require("../services/file-auth");
+const {getFileACL} = require("../model");
 
 module.exports = function (exceptions) {
     if (config.authEnabled) {
