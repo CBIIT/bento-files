@@ -1,5 +1,5 @@
 const config = require('../config');
-const getFileLocation = require('../model');
+const {getFileLocation} = require("../model");
 
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
