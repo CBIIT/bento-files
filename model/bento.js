@@ -1,4 +1,4 @@
-const {getFileField} = require("../utils/file-util");
+const {getFileField} = require("../services/file-auth");
 module.exports = {
     query: `query file($file_id: String){  
         file (file_id: $file_id)
@@ -8,11 +8,9 @@ module.exports = {
         }
     }`,
     getLocation: (data) => {
-        getFileField.bind({fileField: data.file[0].file_location});
-        return getFileField(data);
+        return getFileField(data, (data)=> data.file[0].file_location);
     },
     getAcl: (data) => {
-        getFileField.bind({fileField: data.file[0].acl});
-        return getFileField(data);
+        return getFileField(data, (data)=> data.file[0].acl);
     }
 };

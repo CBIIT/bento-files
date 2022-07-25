@@ -1,12 +1,3 @@
-const getFileField = (data)=> {
-    if (data && data.file && data.file.length > 0) {
-        return this.fileField;
-    } else {
-        console.error("File not found in DB");
-        return null;
-    }
-}
-
 function strToArr(str) {
     try {
         let arr = str.replace(/'/g, '"');
@@ -19,6 +10,5 @@ function strToArr(str) {
 }
 
 module.exports = {
-    getFileField,
     strToArr
 }

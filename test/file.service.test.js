@@ -1,6 +1,6 @@
-const {authFileACL} = require("../services/file-auth");
+const {authFileACL, getFileField} = require("../services/file-auth");
 const {getFileACL} = require("../model");
-const {strToArr, getFileField} = require("../utils/file-util");
+const {strToArr} = require("../utils/file-util");
 
 jest.mock('../model')
 
@@ -38,11 +38,9 @@ describe('Util Test', () => {
 
     test('/bind test', async () => {
         const data = {
-            file: [{file_location: 'yes'}]
+            file: [{file_location: 'yes', acl: ['Open']}]
         }
-        getFileField.bind({fileField: data.file[0].file_location});
-        const result = getFileField(data);
-        console.log();
-
+        expect(getFileField(data, (data)=> data.file[0].file_location)).toBe('yes');
+        expect(getFileField(data, (data)=> data.file[0].acl)).toStrictEqual(['Open']);
     })
 });
