@@ -1,4 +1,4 @@
-import {isCaseInsensitiveEqual} from "../utils/string-util";
+const {isCaseInsensitiveEqual} = require("../utils/string-util");
 
 describe('Util Test', () => {
     test('/string case insensitive equal', () => {

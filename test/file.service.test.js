@@ -1,7 +1,7 @@
 const {getFileField, authFileACL} = require("../services/file-auth");
 const {getFileACL} = require("../model");
 const {strToArr} = require("../utils/string-util");
-
+jest.mock('../model');
 describe('File Service Test', () => {
 
     test('/file acl array & user acl array compare test', () => {
