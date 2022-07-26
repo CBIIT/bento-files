@@ -1,20 +1,19 @@
 const config = require('../config');
 const {authFileACL} = require("../services/file-auth");
 const {getFileACL} = require("../model");
+const {strToArr} = require("./string-util");
 
 module.exports = function (exceptions) {
     if (config.authEnabled) {
         return async function(req, res, next) {
-            if (exceptions && exceptions.includes(req.path)) {
-                return next();
-            }
+            if (exceptions && exceptions.includes(req.path)) return next();
             try {
-                if (req.session && req.session.userInfo) {
+                if (req.session && req.session.userInfo && req.path.includes("/api/files/")) {
                     if (!config.authorizationEnabled) return next();
                     // Search ACL in Bento-Backend API
                     const fileId = req.path.replace("/api/files/", "");
                     const fileAcl = await getFileACL(fileId);
-                    if (authFileACL(req.session.userInfo.acl, fileAcl)) return next();
+                    if (authFileACL(req.session.userInfo.acl, strToArr(fileAcl))) return next();
                 }
                 return res.status(403).send('Not authenticated!');
             } catch (e) {
