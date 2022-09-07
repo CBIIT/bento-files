@@ -18,12 +18,11 @@ module.exports = function (exceptions) {
                     const fileId = req.path.replace("/api/files/", "");
                     const fileAcl = await getFileACL(fileId);
                     const userAcl = req.session.userInfo.acl ? req.session.userInfo.acl : [];
-                    // Open all file access to Admin user
-                    if (isAdminUser(req.session.userInfo)) return next();
-                    // Inspect file accessibility
-                    if (isAuthorizedAccess(userAcl, strToArr(fileAcl))) return next();
+                    // Open all file access to admin user && Inspect file accessibility from session
+                    if (isAdminUser(req.session.userInfo) || isAuthorizedAccess(userAcl, strToArr(fileAcl))) return next();
+                    return res.status(403).send('Not authorized!');
                 }
-                return res.status(403).send('Not authenticated!');
+                return res.status(401).send('Not authenticated!');
             } catch (e) {
                 console.log(e);
                 return res.status(500).send(e);
