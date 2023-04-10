@@ -1,4 +1,4 @@
-FROM node:16.17.1-alpine3.15
+FROM node:16-alpine3.11
 ENV PORT 8081
 ENV NODE_ENV production
 WORKDIR /usr/src/app
