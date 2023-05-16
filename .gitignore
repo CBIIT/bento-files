@@ -105,3 +105,4 @@ dist
 
 # Webstorm project files
 .idea/
+config.env
