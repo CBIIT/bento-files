@@ -31,7 +31,7 @@ async function getFile(fileId, req, res, next) {
   try {
     const cookie = req.headers.cookie;
     let response = await getURL(fileId, cookie);
-    await storeDownloadEvent(req.session.userInfo, fileId);
+    await storeDownloadEvent(req.session?.userInfo, fileId);
     res.send(response);
   } catch (e) {
     console.error(e);
