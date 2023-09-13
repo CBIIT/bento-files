@@ -15,6 +15,7 @@ const BENTO = 'BENTO';
 const GMB = 'GMB';
 const C3DC = 'C3DC';
 const CTDC = 'CTDC';
+const CDS = 'CDS';
 
 const config = {
   projectNames: {
@@ -22,7 +23,8 @@ const config = {
     BENTO,
     GMB,
     C3DC,
-    CTDC
+    CTDC,
+    CDS
   },
   sourceNames: {
     INDEXD,

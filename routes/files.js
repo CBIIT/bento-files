@@ -18,14 +18,20 @@ router.get('/version', function(req, res, next) {
   });
 });
 
+router.get('/:prefix/:fileId', async function(req, res, next) {
+  await getFile(req.params.prefix+"/"+req.params.fileId, req, res, next);
+});
 
 /* GET file's location based on fileId. */
 router.get('/:fileId', async function(req, res, next) {
-  const fileId = req.params.fileId;
+  await getFile(req.params.fileId, req, res, next);
+});
+
+async function getFile(fileId, req, res, next) {
   try {
     const cookie = req.headers.cookie;
     let response = await getURL(fileId, cookie);
-    await storeDownloadEvent(req.session.userInfo, fileId);
+    await storeDownloadEvent(req.session?.userInfo, fileId);
     res.send(response);
   } catch (e) {
     console.error(e);
@@ -39,6 +45,6 @@ router.get('/:fileId', async function(req, res, next) {
     }
     res.status(status).send(message);
   }
-});
+}
 
 module.exports = router;

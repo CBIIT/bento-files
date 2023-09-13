@@ -2,7 +2,7 @@ const config = require('../config');
 const {isAuthorizedAccess} = require("../services/file-auth");
 const {getFileACL} = require("../model");
 const {strToArr} = require("./string-util");
-const {isAdminUser} = require("../services/user-auth");
+const {isAdminUser, getApprovedUserAcls} = require("../services/user-auth");
 
 module.exports = function (exceptions) {
     return async function(req, res, next) {
@@ -17,7 +17,7 @@ module.exports = function (exceptions) {
                 const fileId = req.path.replace("/api/files/", "");
                 const cookie = req.headers.cookie;
                 const fileAcl = await getFileACL(fileId, cookie);
-                const userAcl = req.session.userInfo.acl ? req.session.userInfo.acl : [];
+                const userAcl = getApprovedUserAcls(req.session.userInfo.acl);
                 // Open all file access to Admin user
                 if (isAdminUser(req.session.userInfo)) return next();
                 // Inspect file accessibility

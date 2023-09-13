@@ -4,7 +4,7 @@ const bent = require('bent');
 const queryBackend = bent('POST', 'json');
 
 let model;
-switch (config.project) {
+switch (config.project.toUpperCase()) {
   case config.projectNames.ICDC:
     model = require('./icdc');
     break;
@@ -19,6 +19,9 @@ switch (config.project) {
     break;
   case config.projectNames.CTDC:
     model = require('./ctdc');
+    break;
+  case config.projectNames.CDS:
+    model = require('./cds');
     break;
   default:
     throw `Unknown project "${config.project}"`;

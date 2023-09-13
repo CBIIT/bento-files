@@ -22,8 +22,10 @@ const storeDownloadEvent = async function(userInfo, fileID){
         idp = userInfo.IDP;
     }
     let file = await getFileByID(neo4jConnection, fileID);
-    const downloadEvent = new DownloadEvent(userID, email, idp, file.properties.file_format, fileID, file.properties.file_name, file.properties.file_size);
-    await logEvent(neo4jConnection, downloadEvent);
+    if (file) {
+        const downloadEvent = new DownloadEvent(userID, email, idp, file.properties.file_format, fileID, file.properties.file_name, file.properties.file_size);
+        await logEvent(neo4jConnection, downloadEvent);
+    }
 };
 
 module.exports = {

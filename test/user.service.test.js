@@ -1,4 +1,4 @@
-const {isAdminUser} = require("../services/user-auth");
+const {isAdminUser, getApprovedUserAcls} = require("../services/user-auth");
 describe('File Service Test', () => {
 
     test('/file acl array & user acl array compare test', () => {
@@ -16,6 +16,24 @@ describe('File Service Test', () => {
         for (let t of test) {
             const result = isAdminUser(t.session);
             expect(result).toBe(t.result);
+        }
+    });
+
+    test('/file approved user acls', () => {
+        const test = [
+            // {session: {}, result: false},
+            {session: [{accessStatus: 'Approved', armID:'abcd'}], result: ['abcd']},
+            {session: [{accessStatus: 'Approved', armID:''}], result: []},
+            {session: [{}], result: []},
+            {session: [{accessStatus: 'Approved', armID: undefined}], result: []},
+            {session: [{accessStatus: 'Approved', armid: "aaa"}], result: []},
+            {session: [{accessStatus: 'Pending', armID: "aaa"}], result: []},
+            {session: [{accessStatus: 'Pending', armID: "aaa"}, {accessStatus: 'Approved', armID: "aaa"}], result: ["aaa"]},
+        ];
+
+        for (let t of test) {
+            const result = getApprovedUserAcls(t.session);
+            expect(result).toStrictEqual(t.result);
         }
     });
 });
