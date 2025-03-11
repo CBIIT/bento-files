@@ -6,8 +6,9 @@ const getJSON = bent(config.indexDUrl, "json");
 module.exports = async function (file_id) {
   try {
     let result = await getJSON(`/${file_id}`);
+    console.log(result);
     return result.url;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
