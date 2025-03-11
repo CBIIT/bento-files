@@ -9,7 +9,6 @@ module.exports = async function (file_id) {
     console.log("Result:  ", result);
     return result.url;
   } catch (error) {
-    console.log("Error fetching file data from indexD!");
-    console.error(error);
+    console.log("Error fetching file data from indexD!", error);
   }
 };
