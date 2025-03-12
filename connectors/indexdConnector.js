@@ -2,6 +2,8 @@ const bent = require("bent");
 const config = require("../config");
 
 const getJSON = bent(config.indexDUrl, "json");
+console.log(config.indexDUrl);
+console.log(getJSON);
 
 module.exports = async function (file_id) {
   try {
