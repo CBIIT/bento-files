@@ -1,0 +1,177 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  title: bento-files
+  version: 2.3.2
+  description: |
+    Files microservice used to generate signed, time-limited file links for Bento/ICDC.
+    Exposes health endpoints and two file-link endpoints that return the signed URL as plain text.
+servers:
+  - url: http://localhost:3000
+    description: Local development
+  - url: https://caninecommons-dev.cancer.gov
+    description: DEV
+  - url: https://caninecommons-qa.cancer.gov
+    description: QA
+  - url: https://caninecommons-stage.cancer.gov
+    description: STAGE
+  - url: https://caninecommons.cancer.gov
+    description: PROD
+
+tags:
+  - name: health
+    description: Liveness and version endpoints
+  - name: files
+    description: Generate/download signed links
+
+paths:
+  /api/files/ping:
+    get:
+      tags:
+        - health
+      summary: Liveness check
+      operationId: getPing
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: pong
+
+  /api/files/version:
+    get:
+      tags:
+        - health
+      summary: Service version
+      operationId: getVersion
+      responses:
+        '200':
+          description: Version info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionResponse'
+              example:
+                version: "2.3.2"
+                date: "2025-07-29"
+
+  /api/files/{fileId}:
+    get:
+      tags:
+        - files
+      summary: Get a signed URL for a file by ID
+      description: Returns the signed URL as plain text in the response body.
+      operationId: getFileLinkById
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        '200':
+          description: Signed URL
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: uri
+              example: "https://files.example.org/download/010031_0103_sorted.bam?sig=REDACTED&expires=2025-01-01T00:00:00Z"
+        '404':
+          description: File not found
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: NOT FOUND
+        '400':
+          description: Bad request (invalid ID)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/files/{prefix}/{fileId}:
+    get:
+      tags:
+        - files
+      summary: Get a signed URL by project prefix and file ID
+      description: Returns the signed URL as plain text in the response body.
+      operationId: getFileLinkByPrefixAndId
+      parameters:
+        - $ref: '#/components/parameters/prefix'
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        '200':
+          description: Signed URL
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: uri
+              example: "https://files.example.org/download/{prefix}/010031_0103_sorted.bam?sig=REDACTED&expires=2025-01-01T00:00:00Z"
+        '404':
+          description: File not found
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: NOT FOUND
+        '400':
+          description: Bad request (invalid prefix or ID)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  parameters:
+    prefix:
+      name: prefix
+      in: path
+      required: true
+      description: Project prefix or route partition (e.g., ICDC, BENTO, GMB, C3DC)
+      schema:
+        type: string
+    fileId:
+      name: fileId
+      in: path
+      required: true
+      description: File identifier used by the backend/connector
+      schema:
+        type: string
+
+  schemas:
+    VersionResponse:
+      type: object
+      required:
+        - version
+        - date
+      properties:
+        version:
+          type: string
+        date:
+          type: string
+          format: date
+          description: YYYY-MM-DD
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+          description: Optional machine-readable error code
