@@ -1,4 +1,4 @@
-name: Build Image
+name: ICDC Build Image
 permissions: 
   contents: write
   id-token: write
