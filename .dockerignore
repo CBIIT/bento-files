@@ -4,3 +4,9 @@ npm-debug.log
 .gitignore
 logs
 test
+
+# Do not send local secret files to the Docker build context
+.env
+*.pem
+*.key
+*.crt
