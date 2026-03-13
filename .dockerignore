@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+logs
+test
+
+# Do not send local secret files to the Docker build context
+.env
+*.pem
+*.key
+*.crt
