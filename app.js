@@ -18,9 +18,19 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, LOG_FOLDER, 'a
 
 const filesRouter = require('./routes/files');
 
+// Allowed origins: any *.cancer.gov subdomain (https) and localhost on any port (dev)
+const ALLOWED_ORIGIN = /^https:\/\/[a-zA-Z0-9-]+\.cancer\.gov(:\d+)?$|^https?:\/\/localhost(:\d+)?$/;
+
 const app = express();
 if (config.mysqlSessionEnabled) app.use(createSession());
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow server-to-server requests that have no Origin header
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGIN.test(origin)) return callback(null, true);
+    callback(null, false);
+  }
+}));
 
 // setup the logger
 app.use(logger('combined', { stream: accessLogStream }))
