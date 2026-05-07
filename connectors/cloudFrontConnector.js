@@ -1,16 +1,14 @@
 const config = require('../config');
-const AWS = require('aws-sdk');
+const { getSignedUrl } = require('@aws-sdk/cloudfront-signer');
 
 
 const DEFAULT_EXPIRATION_SECONDS = 60 * 60 * 24; // 24 hours
-
-const signer = new AWS.CloudFront.Signer(config.cfKeyPairId, config.cfPrivateKey);
 
 const {getFileLocation} = require("../model");
 
 function getExpiration() {
   const expiresInSeconds = config.urlExpiresInSeconds || DEFAULT_EXPIRATION_SECONDS;
-  return Math.floor((new Date()).getTime() / 1000) + expiresInSeconds; //Current Time in UTC + expiresInSeconds
+  return new Date(Date.now() + expiresInSeconds * 1000).toISOString();
 }
 
 function transformToCloudFrontUrl(file_location) {
@@ -27,9 +25,11 @@ async function getSignedURL(file_location) {
   if (config.fake) {
     return file_location;
   }
-  const signedUrl = signer.getSignedUrl({
+  const signedUrl = getSignedUrl({
     url: transformToCloudFrontUrl(file_location),
-    expires: getExpiration()
+    keyPairId: config.cfKeyPairId,
+    privateKey: config.cfPrivateKey,
+    dateLessThan: getExpiration()
   });
   return signedUrl;
 }
