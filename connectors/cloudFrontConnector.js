@@ -1,13 +1,24 @@
-const config = require('../config');
-const { getSignedUrl } = require('@aws-sdk/cloudfront-signer');
-
+const config = require("../config");
+const { getSignedUrl } = require("@aws-sdk/cloudfront-signer");
 
 const DEFAULT_EXPIRATION_SECONDS = 60 * 60 * 24; // 24 hours
 
-const {getFileLocation} = require("../model");
+const { getFileLocation } = require("../model");
 
 function getExpiration() {
-  const expiresInSeconds = config.urlExpiresInSeconds || DEFAULT_EXPIRATION_SECONDS;
+  const configuredExpiration = config.urlExpiresInSeconds;
+  const expiresInSeconds =
+    configuredExpiration === undefined ||
+    configuredExpiration === null ||
+    configuredExpiration === ""
+      ? DEFAULT_EXPIRATION_SECONDS
+      : Number(configuredExpiration);
+
+  if (!Number.isFinite(expiresInSeconds) || expiresInSeconds < 0) {
+    throw new Error(
+      `Invalid config.urlExpiresInSeconds value: ${config.urlExpiresInSeconds}. Expected a finite, non-negative number of seconds.`,
+    );
+  }
   return new Date(Date.now() + expiresInSeconds * 1000).toISOString();
 }
 
@@ -37,5 +48,4 @@ async function getSignedURL(file_location) {
 module.exports = async function (file_id, cookie) {
   const location = await getFileLocation(file_id, cookie);
   return await getSignedURL(location);
-}
-
+};
